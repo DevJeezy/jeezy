@@ -23,3 +23,23 @@
 /app/Config/core.php
 /app/Config/database.php
 /vendors/*
+$result=json_decode(file_get_contents("https://api.telegram.org/bot".API_KEY."/getUserProfilePhotos?user_id=$from_id"),true);
+$count=$result["result"]["total_count"]; 
+$pr = str_replace("جلب صوره ", "", $text);
+if($text=="جلب صوره $pr" && $pr <= $count){
+$result=json_decode(file_get_contents("https://api.telegram.org/bot".API_KEY."/getUserProfilePhotos?user_id=$from_id"),true);
+$file_id=$result["result"]["photos"][$pr-1][0]["file_id"];
+$count=$result["result"]["total_count"];var_dump(
+  
+bot('sendphoto',[
+'chat_id'=>$chat_id,
+'photo'=>"$file_id",
+'caption' =>"هذه هي الصوره رقم $pr
+عدد صورك $count", 'reply_to_message_id'=>$message->message_id, 
+]));
+}elseif($text == "جلب صوره $pr" && $pr > $count){
+bot('sendMessage',[
+'chat_id' =>$chat_id,
+'text' =>"عذرا انت تمتلك $count صوره فقط",'reply_to_message_id'=>$message->message_id, 
+]);
+}
